@@ -98,7 +98,7 @@ pip install requests
 
 ## 6. メタデータの取得
 
-### 6-1. relationType が 'IsSupplementTo' のデータ
+### 6-1. relationType が 'IsSupplementTo' の条件で取得
 
 code_01.py を以下通りに修正して実行
 ```
@@ -107,7 +107,7 @@ filter_relation_type = "IsSupplementTo"
 ```bash
 python code_01.py
 ```
-### 6-1. relationType が 'IsReferencedBy' のデータ
+### 6-2. relationType が 'IsReferencedBy' の条件で取得
 
 code_01.py を以下通りに修正して実行 
 ```
@@ -117,3 +117,8 @@ filter_relation_type = "IsReferencedBy"
 python code_01.py
 ```
 
+### 6-3. 関連識別子のリソースタイプを取得
+
+```bash
+python code_02.py
+```
