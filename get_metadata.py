@@ -7,7 +7,7 @@ import time
 # 設定
 # -----------------------------
 resource_type_id = "dataset"
-published_year = "2024"
+published_year = "2025"
 page_size = 100
 sleep_interval = 1.0
 max_records = 20000
@@ -22,8 +22,8 @@ exclude_publishers = [
     "UC San Diego Library Digital Collections"
 ]
 
-json_output_file = "raw_datacite_2025.json"
-db_file = "datacite.db"
+json_output_file = "raw_metadata_2025.json"
+db_file = "metadata.db"
 
 # -----------------------------
 # DB接続
