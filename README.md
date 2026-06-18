@@ -29,7 +29,7 @@ sqlite3 metadata.db
 
 ### 3-1. メインテーブル
 
-```
+```sql
 CREATE TABLE datasets (
     doi TEXT PRIMARY KEY,
     resource_type TEXT,
@@ -43,7 +43,7 @@ CREATE TABLE datasets (
 
 ### 3-2. 関連識別子テーブル(子テーブル)
 
-```
+```sql
 CREATE TABLE related_identifiers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     doi TEXT,
@@ -55,12 +55,23 @@ CREATE TABLE related_identifiers (
 ```
 
 重複防止
-```
+```sql
 CREATE UNIQUE INDEX uniq_rel
 ON related_identifiers(doi, related_identifier, relation_type);
 ```
 
-### 補足
+### 3-3. リソースタイプテーブル
+
+```sql
+CREATE TABLE identifiers (
+    identifier TEXT PRIMARY KEY,
+    identifier_type TEXT,
+    resource_type TEXT,
+    source TEXT
+);
+```
+
+### 3-4. 補足
 
 SQLiteの外部キー制約はデフォルトで無効のため、SQLite起動後に毎回以下を実行して外部キー制約を有効化する必要がある
 ```
@@ -72,30 +83,19 @@ Python
 conn.execute("PRAGMA foreign_keys = ON;")
 ```
 
-### 3-3. リソースタイプテーブル
-
-```
-CREATE TABLE identifiers (
-    identifier TEXT PRIMARY KEY,
-    identifier_type TEXT,
-    resource_type TEXT,
-    source TEXT
-);
-```
-
-## 3. 仮想環境の導入
+## 4. 仮想環境の導入
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-## 4. 必要なライブラリのインストール
+## 5. 必要なライブラリのインストール
 
 ```bash
 pip install requests
 ```
 
-
+## 6. メタデータの取得
 
 
