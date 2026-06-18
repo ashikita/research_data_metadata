@@ -14,7 +14,9 @@
 
 ---
 
-## 1. 必要なライブラリのインストール
+## 1. 仮想環境の導入
 
 ```bash
-pip install requests
+python3 -m venv venv
+source venv/bin/activate
+
