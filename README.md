@@ -60,6 +60,8 @@ CREATE UNIQUE INDEX uniq_rel
 ON related_identifiers(doi, related_identifier, relation_type);
 ```
 
+### 補足
+
 SQLiteの外部キー制約はデフォルトで無効のため、SQLite起動後に毎回以下を実行して外部キー制約を有効化する必要がある
 ```
 -- SQLite起動後すぐ実行
@@ -69,7 +71,6 @@ Python
 ```
 conn.execute("PRAGMA foreign_keys = ON;")
 ```
-
 
 ### 3-3. リソースタイプテーブル
 
