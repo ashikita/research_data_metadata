@@ -56,6 +56,9 @@ CREATE TABLE related_identifiers (
 
 ```
 CREATE TABLE identifiers (
+    identifier TEXT,
+    identifier_type TEXT,
+    source TEXT,
 );
 ```
 
