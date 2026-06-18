@@ -71,9 +71,10 @@ CREATE TABLE identifiers (
 );
 ```
 
-### 3-4. 補足
+### 3-4. 注意点
 
-SQLiteの外部キー制約はデフォルトで無効のため、SQLite起動後に毎回以下を実行して外部キー制約を有効化する必要がある
+メインテーブル（datasets）と子テーブル（related_identifiers）は、データ間の対応関係（参照整合性）を保ち、不正なデータ（存在しないDOI）を防ぐために外部キーで関連付けている。 
+SQLiteの外部キー制約はデフォルトで無効のため、SQLite起動後に毎回以下を実行して外部キー制約を有効化する必要がある。 
 ```sql
 -- SQLite起動後すぐ実行
 PRAGMA foreign_keys = ON;
