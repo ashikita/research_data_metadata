@@ -101,25 +101,25 @@ pip install requests
 
 ### 6-1. relationType が 'IsSupplementTo' の条件で取得
 
-code_01.py を以下通りに修正して実行
+get_metadata.py を以下通りに修正して実行
 ```
 filter_relation_type = "IsSupplementTo"
 ```
 ```bash
-python code_01.py
+python get_metadata.py
 ```
 ### 6-2. relationType が 'IsReferencedBy' の条件で取得
 
-code_01.py を以下通りに修正して実行 
+get_metadata.py を以下通りに修正して実行 
 ```
 filter_relation_type = "IsReferencedBy"
 ```
 ```bash
-python code_01.py
+python get_metadata.py
 ```
 
 ### 6-3. 関連識別子のリソースタイプを取得
 
 ```bash
-python code_02.py
+python get_resource_type.py
 ```
