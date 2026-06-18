@@ -14,16 +14,64 @@
 
 ---
 
-## 1. 仮想環境の導入
+## 1. SQLiteのインストール
+
+```bash
+sudo apt update
+sudo apt install sqlite3
+```
+## 2. データベースの作成
+
+```bash
+sqlite3 metadata.db
+```
+## 3. テーブルの作成
+
+### 3-1. メインテーブル
+
+```
+CREATE TABLE datasets (
+    doi TEXT PRIMARY KEY,
+    resource_type TEXT,
+    created TEXT,
+    registered TEXT,
+    published TEXT,
+    updated TEXT
+);
+```
+
+### 3-2. 子テーブル1
+
+```
+CREATE TABLE related_identifiers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    doi TEXT,
+    related_identifier TEXT,
+    related_identifier_type TEXT,
+    relation_type TEXT,
+    FOREIGN KEY (doi) REFERENCES datasets(doi)
+);
+```
+### 3-2. 子テーブル2
+
+```
+CREATE TABLE identifiers (
+);
+```
+
+## 3. 仮想環境の導入
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-## 2. 必要なライブラリのインストール
+## 4. 必要なライブラリのインストール
 
 ```bash
 pip install requests
 ```
+
+
+
 
