@@ -40,7 +40,7 @@ CREATE TABLE datasets (
 );
 ```
 
-### 3-2. 子テーブル1
+### 3-2. 関連識別子テーブル
 
 ```
 CREATE TABLE related_identifiers (
