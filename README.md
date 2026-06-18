@@ -74,12 +74,12 @@ CREATE TABLE identifiers (
 ### 3-4. 補足
 
 SQLiteの外部キー制約はデフォルトで無効のため、SQLite起動後に毎回以下を実行して外部キー制約を有効化する必要がある
-```
+```sql
 -- SQLite起動後すぐ実行
 PRAGMA foreign_keys = ON;
 ```
 Python
-```
+```python
 conn.execute("PRAGMA foreign_keys = ON;")
 ```
 
