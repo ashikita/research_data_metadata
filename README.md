@@ -33,9 +33,10 @@ sqlite3 metadata.db
 CREATE TABLE datasets (
     doi TEXT PRIMARY KEY,
     resource_type TEXT,
+    publisher TEXT, 
+    published TEXT,
     created TEXT,
     registered TEXT,
-    published TEXT,
     updated TEXT
 );
 ```
@@ -52,13 +53,26 @@ CREATE TABLE related_identifiers (
     FOREIGN KEY (doi) REFERENCES datasets(doi)
 );
 ```
-### 3-2. 子テーブル2
+
+重複防止
+```
+CREATE UNIQUE INDEX uniq_rel
+ON related_identifiers(doi, related_identifier, relation_type);
+```
+
+SQLite起動後に必ず以下を実行して外部キー制約を有効化
+```
+PRAGMA foreign_keys = ON;
+```
+
+### 3-3. リソースタイプテーブル
 
 ```
 CREATE TABLE identifiers (
-    identifier TEXT,
+    identifier TEXT PRIMARY KEY,
     identifier_type TEXT,
-    source TEXT,
+    resource_type TEXT,
+    source TEXT
 );
 ```
 
