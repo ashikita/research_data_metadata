@@ -168,7 +168,7 @@ python get_resource_type.py
 
 ```sql
 .tables
-datasets             identifiers          related_identifiers```
+datasets             identifiers          related_identifiers
 ```
 
 ### 7-2. 各テーブルの件数確認
