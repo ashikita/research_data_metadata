@@ -110,18 +110,38 @@ pip install requests
 
 ## 6. メタデータの取得
 
-### 6-1. relationType が 'IsSupplementTo' の条件で取得
+### 6-1. 設定
 
-get_metadata.py を以下通りに修正して実行
-```python
-filter_relation_type = "IsSupplementTo"
+get_metadata.pyを開いて設定変更
+
+```bash
+contact_email = "your_email@example.com"
 ```
+* User-Agentにメールアドレスを含めることで利用者を識別可能にし、API提供者に配慮したアクセスを行います。
+
+必要に応じてフィルタリング設定を変更してください。
+
+* リソースタイプ: dataset
+* 出版年: 2025
+* 関連情報のrelation type属性: IsSupplementTo
+* 除外する出版者
+    * HEPData
+    * Cambridge Crystallographic Data Centre
+    * National Institute for Fusion Science (NIFS)
+    * UC San Diego Library Digital Collections
+
+### 6-2. 実行
+
+Pythonコードにより取得したメタデータをmetadata.dbとraw_metadata_2025.jsonに保存します。
+
 ```bash
 python get_metadata.py
 ```
-### 6-2. relationType が 'IsReferencedBy' の条件で取得
 
-get_metadata.py を以下通りに修正して実行 
+### 6-3. 設定を変えて再実行
+
+get_metadata.py を以下通りに修正して再度実行してください。
+
 ```python
 filter_relation_type = "IsReferencedBy"
 ```
