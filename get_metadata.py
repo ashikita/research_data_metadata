@@ -15,6 +15,15 @@ max_records = 20000
 filter_relation_type = "IsSupplementTo"
 # filter_relation_type = "IsReferencedBy"
 
+# メールアドレス（連絡先）
+contact_email = "your_email@example.com"
+
+# HTTPヘッダー
+headers = {
+    "User-Agent": f"DataCiteCollector/1.0 ({contact_email})"
+}
+
+# 除外する出版者
 exclude_publishers = [
     "HEPData",
     "Cambridge Crystallographic Data Centre",
@@ -22,6 +31,7 @@ exclude_publishers = [
     "UC San Diego Library Digital Collections"
 ]
 
+# 出力先
 json_output_file = "raw_metadata_2025.json"
 db_file = "metadata.db"
 
@@ -29,6 +39,7 @@ db_file = "metadata.db"
 # DB接続
 # -----------------------------
 conn = sqlite3.connect(db_file)
+conn.execute("PRAGMA foreign_keys = ON;")
 cursor = conn.cursor()
 
 # -----------------------------
@@ -40,7 +51,6 @@ base_url = (
     f"published={published_year}&"
     f"page[size]={page_size}"
 )
-
 # -----------------------------
 # データ取得
 # -----------------------------
@@ -49,7 +59,7 @@ total_count = 0
 url = base_url
 
 while url and total_count < max_records:
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
     if response.status_code != 200:
         print(f"取得失敗: {response.status_code}")
         break
@@ -99,7 +109,7 @@ while url and total_count < max_records:
         for rel in attr.get("relatedIdentifiers", []):
             if rel.get("relationType") == filter_relation_type:
                 cursor.execute("""
-                    INSERT INTO related_identifiers (
+                    INSERT OR IGNORE INTO related_identifiers (
                         doi,
                         related_identifier,
                         related_identifier_type,
