@@ -191,6 +191,7 @@ GROUP BY relation_type;
 IsReferencedBy|94
 IsSupplementTo|673
 ```
+補足データが多く、データ引用は少ない。
 
 ### 7-4. resource_typeの分布確認
 
