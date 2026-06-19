@@ -336,3 +336,37 @@ LIMIT 10;
 * relation_type に "IsSupplementTo" および "IsReferencedBy" が含まれる
 * 多くのrelated_identifierが journal-article として分類される
 * 一部に dataset（Numeric Data等）も含まれる
+
+## テーブル構造
+
+```mermaid
+erDiagram
+    datasets {
+        TEXT doi PK
+        TEXT resource_type
+        TEXT publisher
+        TEXT published
+        TEXT created
+        TEXT registered
+        TEXT updated
+    }
+
+    related_identifiers {
+        INTEGER id PK
+        TEXT doi FK
+        TEXT related_identifier
+        TEXT related_identifier_type
+        TEXT relation_type
+    }
+
+    identifiers {
+        TEXT identifier PK
+        TEXT identifier_type
+        TEXT resource_type
+        TEXT source
+    }
+
+    datasets ||--o{related_identifiers : "doi (FK制約あり)"
+    related_identifiers}o--|| identifiers : "related_identifier = identifier (論理結合・FKなし)"
+```
+
