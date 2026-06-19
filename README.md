@@ -112,18 +112,18 @@ pip install requests
 
 ### 6-1. 設定
 
-get_metadata.pyを開いて設定変更
+get_metadata.pyを開いて設定変更します。
 
 ```bash
 contact_email = "your_email@example.com"
 ```
 * User-Agentにメールアドレスを含めることで利用者を識別可能にし、API提供者に配慮したアクセスを行います。
 
-必要に応じてフィルタリング設定を変更してください。
+初期状態のフィルタリング設定は以下の通りです。必要に応じて変更してください。
 
 * リソースタイプ: dataset
 * 出版年: 2025
-* 関連情報のrelation type属性: IsSupplementTo
+* 関連情報のrelation type属性: IsSupplementTo or IsReferencedBy
 * 除外する出版者
     * HEPData
     * Cambridge Crystallographic Data Centre
@@ -132,26 +132,14 @@ contact_email = "your_email@example.com"
 
 ### 6-2. 実行
 
-Pythonコードにより取得したメタデータをmetadata.dbとraw_metadata_2025.jsonに保存します。
-
 ```bash
 python get_metadata.py
 ```
-
-### 6-3. 設定を変えて再実行
-
-get_metadata.py を以下通りに修正して再度実行してください。
-
-```python
-filter_relation_type = "IsReferencedBy"
-```
-```bash
-python get_metadata.py
-```
+取得したメタデータをmetadata.dbとraw_metadata.jsonに保存します。
 
 ### 6-3. 関連識別子のリソースタイプを取得
 
-関連識別子（DOIやURL）に対して、Crossref / DataCite API から resource_type を取得し、identifiersテーブルに格納する
+関連識別子（DOIやURL）に対して、Crossref / DataCite API から resource_type を取得し、identifiersテーブルに格納します。
 
 ```bash
 python get_resource_type.py
