@@ -1,4 +1,4 @@
-# DataCite API → SQLite 保存手順
+# DataCite APIによる研究データメタデータの取得とSQLiteへの保存手順
 
 このリポジトリでは、DataCite APIを利用して研究データのメタデータを取得し、SQLiteデータベースに保存する手順をまとめています。
 
