@@ -13,7 +13,10 @@
 3. 外部API（Crossref / DataCite）を用いて関連識別子のリソースタイプを取得
 4. データと論文の関係を構造化する
 
----
+## コード
+
+* get_metadata.py
+* get_resource_type.py
 
 ## 環境
 
