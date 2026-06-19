@@ -12,8 +12,7 @@ page_size = 100
 sleep_interval = 1.0
 max_records = 20000
 
-filter_relation_type = "IsSupplementTo"
-# filter_relation_type = "IsReferencedBy"
+filter_relation_types = ["IsSupplementTo", "IsReferencedBy"]
 
 # メールアドレス（連絡先）
 contact_email = "your_email@example.com"
@@ -23,7 +22,6 @@ headers = {
     "User-Agent": f"DataCiteCollector/1.0 ({contact_email})"
 }
 
-# 除外する出版者
 exclude_publishers = [
     "HEPData",
     "Cambridge Crystallographic Data Centre",
@@ -31,8 +29,7 @@ exclude_publishers = [
     "UC San Diego Library Digital Collections"
 ]
 
-# 出力先
-json_output_file = "raw_metadata_2025.json"
+json_output_file = "raw_metadata.json"
 db_file = "metadata.db"
 
 # -----------------------------
@@ -51,6 +48,12 @@ base_url = (
     f"published={published_year}&"
     f"page[size]={page_size}"
 )
+
+# -----------------------------
+# 時間計測開始
+# -----------------------------
+start_time = time.time()
+
 # -----------------------------
 # データ取得
 # -----------------------------
@@ -85,9 +88,7 @@ while url and total_count < max_records:
 
         resource_type = attr.get("types", {}).get("resourceType", "")
 
-        # -----------------------------
-        # datasetsテーブルにINSERT
-        # -----------------------------
+        # datasets
         cursor.execute("""
             INSERT OR IGNORE INTO datasets (
                 doi, resource_type, created, registered,
@@ -103,11 +104,10 @@ while url and total_count < max_records:
             publisher
         ))
 
-        # -----------------------------
-        # related_identifiersにINSERT
-        # -----------------------------
+        # related_identifiers
         for rel in attr.get("relatedIdentifiers", []):
-            if rel.get("relationType") == filter_relation_type:
+            # ✅ 修正：リストとの比較 → in を使う
+            if rel.get("relationType") in filter_relation_types:
                 cursor.execute("""
                     INSERT OR IGNORE INTO related_identifiers (
                         doi,
@@ -130,17 +130,23 @@ while url and total_count < max_records:
         time.sleep(sleep_interval)
 
 # -----------------------------
-# JSON保存（原本）
+# JSON保存
 # -----------------------------
 with open(json_output_file, "w", encoding="utf-8") as f:
     json.dump(all_data, f, ensure_ascii=False, indent=2)
 
 # -----------------------------
-# コミット＆終了
+# 終了処理
 # -----------------------------
 conn.commit()
 conn.close()
 
+# -----------------------------
+# 時間計測終了
+# -----------------------------
+elapsed_time = time.time() - start_time
+
 print(f"完了: {total_count} 件処理")
+print(f"経過時間: {elapsed_time:.2f} 秒")
 print(f"JSON保存: {json_output_file}")
 print(f"DB保存: {db_file}")
