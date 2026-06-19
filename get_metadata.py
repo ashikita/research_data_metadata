@@ -106,7 +106,6 @@ while url and total_count < max_records:
 
         # related_identifiers
         for rel in attr.get("relatedIdentifiers", []):
-            # ✅ 修正：リストとの比較 → in を使う
             if rel.get("relationType") in filter_relation_types:
                 cursor.execute("""
                     INSERT OR IGNORE INTO related_identifiers (
