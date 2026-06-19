@@ -2,6 +2,7 @@ import requests
 import sqlite3
 import json
 import time
+import zipfile
 
 # -----------------------------
 # 設定
@@ -106,6 +107,7 @@ while url and total_count < max_records:
 
         # related_identifiers
         for rel in attr.get("relatedIdentifiers", []):
+            # 修正：リストとの比較 → in を使う
             if rel.get("relationType") in filter_relation_types:
                 cursor.execute("""
                     INSERT OR IGNORE INTO related_identifiers (
@@ -128,11 +130,18 @@ while url and total_count < max_records:
     if url and total_count < max_records:
         time.sleep(sleep_interval)
 
+
 # -----------------------------
-# JSON保存
+# JSON保存（ZIP圧縮）
 # -----------------------------
-with open(json_output_file, "w", encoding="utf-8") as f:
-    json.dump(all_data, f, ensure_ascii=False, indent=2)
+zip_output_file = "raw_metadata.zip"
+
+with zipfile.ZipFile(zip_output_file, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+    # JSONを文字列として生成
+    json_str = json.dumps(all_data, ensure_ascii=False, indent=2)
+
+    # ZIP内ファイルとして保存
+    zf.writestr("raw_metadata.json", json_str)
 
 # -----------------------------
 # 終了処理
