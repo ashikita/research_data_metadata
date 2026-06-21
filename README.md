@@ -9,8 +9,8 @@
 本手順では以下の流れでデータを構築します：
 
 1. DataCite APIから研究データのメタデータを取得
-2. relatedIdentifiersを分離してSQLiteに格納
-3. 外部API（Crossref / DataCite）を用いて関連識別子のリソースタイプを取得
+2. 関連識別子(relatedIdentifiers)を分離してSQLiteに格納
+3. 外部APICrossref/DataCite）を用いて関連識別子のリソースタイプを取得
 4. データと論文の関係を構造化する
 
 ## コード
@@ -154,9 +154,7 @@ python get_resource_type.py
 - IsReferencedBy: データが論文に引用されている
 - IsPartOf / HasPart: データ同士の構成関係
 
-
 ---
-
 
 ## 7. データ確認手順
 
@@ -209,6 +207,8 @@ book-chapter|1
 Other|1
 Numeric Data|1
 ```
+論文への関連付けが多いが、データ(Numeric Data)への関連付けも1件ある
+
 ### 7-5. identifiersテーブルの解決率確認
 
 ```sql
