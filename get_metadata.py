@@ -3,6 +3,7 @@ import sqlite3
 import json
 import time
 import zipfile
+import os
 from datetime import datetime
 
 # -----------------------------
@@ -136,7 +137,7 @@ while url and total_count < max_records:
 # JSON保存（ZIP圧縮）
 # -----------------------------
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-json_output_file = f"{json_base_name}_{published_year}_{timestamp}.json
+json_output_file = f"{json_base_name}_{published_year}_{timestamp}.json"
 zip_output_file = f"{json_base_name}_{published_year}_{timestamp}.zip"
 
 with zipfile.ZipFile(zip_output_file, "w", compression=zipfile.ZIP_DEFLATED) as zf:
@@ -144,7 +145,7 @@ with zipfile.ZipFile(zip_output_file, "w", compression=zipfile.ZIP_DEFLATED) as 
     json_str = json.dumps(all_data, ensure_ascii=False, indent=2)
 
     # ZIP内ファイルとして保存
-    zf.writestr(f"raw_metadata_{published_year}_{timestamp}.json", json_str)
+    zf.writestr(os.path.basename(json_output_file), json_str)
 
 # -----------------------------
 # 終了処理
@@ -159,5 +160,5 @@ elapsed_time = time.time() - start_time
 
 print(f"完了: {total_count} 件処理")
 print(f"経過時間: {elapsed_time:.2f} 秒")
-print(f"JSON保存: {zip_output_file}")
+print(f"JSON/ZIP保存: {zip_output_file}")
 print(f"DB保存: {db_file}")
