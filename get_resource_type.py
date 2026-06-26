@@ -10,12 +10,11 @@ import zipfile
 db_file = "metadata.db"
 sleep_interval = 0.5
 
-# メールアドレス（APIマナー）
-contact_email = "your_email@example.com"
-
+# メールアドレス（連絡先）
+contact_email = os.environ.get("CONTACT_EMAIL", "example@example.com")
 # HTTPヘッダー
 headers = {
-    "User-Agent": f"IdentifierResolver/1.0 ({contact_email})"
+    "User-Agent": f"DataCiteCollector/1.0 ({contact_email})"
 }
 
 # JSON出力（ZIP）
