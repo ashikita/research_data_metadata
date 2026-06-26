@@ -118,7 +118,7 @@ pip install requests
 get_metadata.pyを開いて設定変更します。
 
 ```bash
-contact_email = "your_email@example.com"
+contact_email = os.environ.get("CONTACT_EMAIL", "example@example.com")
 ```
 * User-Agentにメールアドレスを含めることで利用者を識別可能にし、API提供者に配慮したアクセスを行います。
 
