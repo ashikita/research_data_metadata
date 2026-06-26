@@ -85,8 +85,8 @@ results = []
 
 for identifier, id_type in targets:
 
-    resource_type = resource_type or "Unknown"
-    source = source or "Unknown"
+    resource_type = None
+    source = None
     
     # -------------------------
     # DOIの場合
@@ -111,6 +111,10 @@ for identifier, id_type in targets:
         resource_type = None
         source = "Unknown"
 
+    # 最終補正
+    resource_type = resource_type or "Unknown"
+    source = source or "Unknown"
+    
     # -------------------------
     # DB登録
     # -----------------------------
@@ -170,7 +174,5 @@ minutes = int(elapsed // 60)
 seconds = elapsed % 60
 
 print(f"{count}/{len(targets)} 件処理")
-print(f"完了: {count} 件処理")
 print(f"経過時間: {minutes}分 {seconds:.2f}秒")
-print(f"{count} 件処理")
 print(f"JSON/ZIP保存: {zip_output_file}")
