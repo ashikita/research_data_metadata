@@ -10,7 +10,7 @@ from datetime import datetime
 # 設定
 # -----------------------------
 db_file = "metadata.db"
-sleep_interval = 0.5
+sleep_interval = 1.0
 
 # メールアドレス（連絡先）
 contact_email = os.environ.get("CONTACT_EMAIL", "example@example.com")
@@ -55,14 +55,14 @@ print(f"未登録identifier数: {len(targets)}")
 # -----------------------------
 def fetch_crossref(doi):
     url = f"https://api.crossref.org/works/{doi}"
-    r = requests.get(url, headers=headers)
-
-    if r.status_code != 200:
+    try:
+        r = requests.get(url, headers=headers, timeout=30)
+        r.raise_for_status()
+    except requests.RequestException:
         return None
 
     data = r.json().get("message", {})
     return data.get("type", None)
-
 
 def fetch_datacite(doi):
     url = f"https://api.datacite.org/dois/{doi}"
@@ -85,9 +85,9 @@ results = []
 
 for identifier, id_type in targets:
 
-    resource_type = None
-    source = None
-
+    resource_type = resource_type or "Unknown"
+    source = source or "Unknown"
+    
     # -------------------------
     # DOIの場合
     # -------------------------
@@ -147,13 +147,14 @@ for identifier, id_type in targets:
 # ZIP保存（JSON）
 # -----------------------------
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-json_output_file = f"{json_base_name}_{published_year}_{timestamp}.json"
-zip_output_file = f"{json_base_name}_{published_year}_{timestamp}.zip"
+json_output_file = f"{json_base_name}_{timestamp}.json"
+zip_output_file = f"{json_base_name}_{timestamp}.zip"
 
 with zipfile.ZipFile(zip_output_file, "w", compression=zipfile.ZIP_DEFLATED) as zf:
     json_str = json.dumps(results, ensure_ascii=False, indent=2)
     # ZIP内ファイルとして保存
-    zf.writestr(os.path.basename(json_output_file), json_str)
+    internal_name = os.path.basename(json_output_file)
+    zf.writestr(internal_name, json_str)
 
 # -----------------------------
 # 保存
@@ -168,6 +169,8 @@ elapsed = time.time() - start_time
 minutes = int(elapsed // 60)
 seconds = elapsed % 60
 
+print(f"{count}/{len(targets)} 件処理")
 print(f"完了: {count} 件処理")
 print(f"経過時間: {minutes}分 {seconds:.2f}秒")
+print(f"{count} 件処理")
 print(f"JSON/ZIP保存: {zip_output_file}")
