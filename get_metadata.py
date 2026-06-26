@@ -3,6 +3,7 @@ import sqlite3
 import json
 import time
 import zipfile
+from datetime import datetime
 
 # -----------------------------
 # 設定
@@ -30,7 +31,7 @@ exclude_publishers = [
     "UC San Diego Library Digital Collections"
 ]
 
-json_output_file = "raw_metadata.json"
+json_base_name = "raw_metadata"
 db_file = "metadata.db"
 
 # -----------------------------
@@ -135,7 +136,8 @@ while url and total_count < max_records:
 # JSON保存（ZIP圧縮）
 # -----------------------------
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-zip_output_file = f"raw_metadata_{published_year}_{timestamp}.zip"
+json_output_file = f"{json_base_name}_{published_year}_{timestamp}.json
+zip_output_file = f"{json_base_name}_{published_year}_{timestamp}.zip"
 
 with zipfile.ZipFile(zip_output_file, "w", compression=zipfile.ZIP_DEFLATED) as zf:
     # JSONを文字列として生成
