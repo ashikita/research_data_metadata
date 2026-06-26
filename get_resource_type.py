@@ -3,6 +3,8 @@ import requests
 import time
 import json
 import zipfile
+import os
+from datetime import datetime
 
 # -----------------------------
 # 設定
@@ -18,7 +20,7 @@ headers = {
 }
 
 # JSON出力（ZIP）
-zip_output_file = "identifiers_metadata.zip"
+json_base_name = "identifiers_metadata"
 
 # -----------------------------
 # DB接続
@@ -144,9 +146,14 @@ for identifier, id_type in targets:
 # -----------------------------
 # ZIP保存（JSON）
 # -----------------------------
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+json_output_file = f"{json_base_name}_{published_year}_{timestamp}.json"
+zip_output_file = f"{json_base_name}_{published_year}_{timestamp}.zip"
+
 with zipfile.ZipFile(zip_output_file, "w", compression=zipfile.ZIP_DEFLATED) as zf:
     json_str = json.dumps(results, ensure_ascii=False, indent=2)
-    zf.writestr("identifiers_metadata.json", json_str)
+    # ZIP内ファイルとして保存
+    zf.writestr(os.path.basename(json_output_file), json_str)
 
 # -----------------------------
 # 保存
@@ -163,4 +170,4 @@ seconds = elapsed % 60
 
 print(f"完了: {count} 件処理")
 print(f"経過時間: {minutes}分 {seconds:.2f}秒")
-print(f"ZIP保存: {zip_output_file}")
+print(f"JSON/ZIP保存: {zip_output_file}")
