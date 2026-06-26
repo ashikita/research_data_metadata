@@ -159,5 +159,5 @@ elapsed_time = time.time() - start_time
 
 print(f"完了: {total_count} 件処理")
 print(f"経過時間: {elapsed_time:.2f} 秒")
-print(f"JSON保存: {json_output_file}")
+print(f"JSON保存: {zip_output_file}")
 print(f"DB保存: {db_file}")
