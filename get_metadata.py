@@ -134,14 +134,15 @@ while url and total_count < max_records:
 # -----------------------------
 # JSON保存（ZIP圧縮）
 # -----------------------------
-zip_output_file = "raw_metadata.zip"
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+zip_output_file = f"raw_metadata_{published_year}_{timestamp}.zip"
 
 with zipfile.ZipFile(zip_output_file, "w", compression=zipfile.ZIP_DEFLATED) as zf:
     # JSONを文字列として生成
     json_str = json.dumps(all_data, ensure_ascii=False, indent=2)
 
     # ZIP内ファイルとして保存
-    zf.writestr("raw_metadata.json", json_str)
+    zf.writestr(f"raw_metadata_{published_year}_{timestamp}.json", json_str)
 
 # -----------------------------
 # 終了処理
