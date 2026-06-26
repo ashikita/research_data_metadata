@@ -18,8 +18,7 @@ max_records = 20000
 filter_relation_types = ["IsSupplementTo", "IsReferencedBy"]
 
 # メールアドレス（連絡先）
-contact_email = "your_email@example.com"
-
+contact_email = os.environ.get("CONTACT_EMAIL", "example@example.com")
 # HTTPヘッダー
 headers = {
     "User-Agent": f"DataCiteCollector/1.0 ({contact_email})"
