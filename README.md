@@ -346,6 +346,7 @@ erDiagram
     datasets {
         TEXT doi PK
         TEXT resource_type
+        TEXT resource_type_general
         TEXT publisher
         TEXT published
         TEXT created
