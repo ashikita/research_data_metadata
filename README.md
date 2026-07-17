@@ -47,6 +47,7 @@ sqlite3 metadata.db
 CREATE TABLE datasets (
     doi TEXT PRIMARY KEY,
     resource_type TEXT,
+    resource_type_general TEXT, 
     publisher TEXT, 
     published TEXT,
     created TEXT,
