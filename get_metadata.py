@@ -89,6 +89,7 @@ while url and total_count < max_records:
         updated = attr.get("updated", "")
 
         resource_type = attr.get("types", {}).get("resourceType", "")
+        resource_type_general = attr.get("types", {}).get("resourceTypeGeneral", "")
 
         # datasets
         cursor.execute("""
