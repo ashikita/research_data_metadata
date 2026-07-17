@@ -94,9 +94,9 @@ while url and total_count < max_records:
         # datasets
         cursor.execute("""
             INSERT OR IGNORE INTO datasets (
-                doi, resource_type, created, registered,
+                doi, resource_type, resource_type_general, created, registered,
                 published, updated, publisher
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             doi,
             resource_type,
