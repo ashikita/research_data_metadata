@@ -94,19 +94,26 @@ while url and total_count < max_records:
         # datasets
         cursor.execute("""
             INSERT OR IGNORE INTO datasets (
-                doi, resource_type, resource_type_general, created, registered,
-                published, updated, publisher
+                doi,
+                resource_type,
+                resource_type_general,
+                publisher,
+                published,
+                created,
+                registered,
+                updated
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             doi,
             resource_type,
+            resource_type_general,
+            publisher,
+            str(publication_year),
             created,
             registered,
-            str(publication_year),
-            updated,
-            publisher
+            updated
         ))
-
+        
         # related_identifiers
         for rel in attr.get("relatedIdentifiers", []):
             # 修正：リストとの比較 → in を使う
