@@ -26,7 +26,9 @@ contact_email = os.environ.get(
 )
 
 headers = {
-    "User-Agent": f"DataCiteCollector/1.0 ({contact_email})"
+    "User-Agent": (
+        f"DataCiteCollector/1.0 ({contact_email})"
+    )
 }
 
 # -----------------------------
@@ -45,7 +47,8 @@ SELECT DISTINCT
     r.related_identifier_type
 FROM related_identifiers r
 LEFT JOIN identifiers i
-  ON r.related_identifier = i.identifier
+    ON lower(r.related_identifier)
+       = lower(i.identifier)
 WHERE i.identifier IS NULL
 """)
 
@@ -56,32 +59,12 @@ print(f"未登録identifier数: {len(targets):,}")
 # -----------------------------
 # API関数
 # -----------------------------
-def fetch_crossref(doi):
-
-    url = f"https://api.crossref.org/works/{doi}"
-
-    try:
-        r = requests.get(
-            url,
-            headers=headers,
-            timeout=30
-        )
-
-        r.raise_for_status()
-
-        data = r.json().get("message", {})
-
-        return data.get("type")
-
-    except requests.RequestException:
-        return None
-
-
 def fetch_datacite(doi):
 
     url = f"https://api.datacite.org/dois/{doi}"
 
     try:
+
         r = requests.get(
             url,
             headers=headers,
@@ -97,11 +80,44 @@ def fetch_datacite(doi):
             .get("attributes", {})
         )
 
-        return (
-            data
-            .get("types", {})
-            .get("resourceType")
+        types = data.get("types", {})
+
+        return {
+            "resource_type":
+                types.get("resourceType"),
+            "resource_type_general":
+                types.get("resourceTypeGeneral")
+        }
+
+    except requests.RequestException:
+        return None
+
+
+def fetch_crossref(doi):
+
+    url = f"https://api.crossref.org/works/{doi}"
+
+    try:
+
+        r = requests.get(
+            url,
+            headers=headers,
+            timeout=30
         )
+
+        r.raise_for_status()
+
+        data = r.json().get(
+            "message",
+            {}
+        )
+
+        return {
+            "resource_type":
+                data.get("type"),
+            "resource_type_general":
+                None
+        }
 
     except requests.RequestException:
         return None
@@ -111,7 +127,6 @@ def fetch_datacite(doi):
 # メイン処理
 # -----------------------------
 count = 0
-
 jsonl_buffer = []
 
 try:
@@ -119,7 +134,16 @@ try:
     for identifier, id_type in targets:
 
         resource_type = None
+        resource_type_general = None
         source = None
+
+        # DOI正規化
+        if identifier:
+            identifier = (
+                identifier
+                .strip()
+                .lower()
+            )
 
         # -------------------------
         # DOI
@@ -128,19 +152,42 @@ try:
             id_type == "DOI"
             and identifier
             and identifier.startswith("10.")
+            and "/" in identifier
         ):
 
-            resource_type = fetch_crossref(identifier)
+            result = fetch_datacite(identifier)
 
-            if resource_type:
-                source = "Crossref"
+            if result:
+
+                resource_type = (
+                    result["resource_type"]
+                )
+
+                resource_type_general = (
+                    result["resource_type_general"]
+                )
+
+                source = "DataCite"
 
             else:
 
-                resource_type = fetch_datacite(identifier)
+                result = fetch_crossref(identifier)
 
-                if resource_type:
-                    source = "DataCite"
+                if result:
+
+                    resource_type = (
+                        result["resource_type"]
+                    )
+
+                    resource_type_general = (
+                        result["resource_type_general"]
+                    )
+
+                    source = "Crossref"
+
+                else:
+
+                    source = "Error"
 
         # -------------------------
         # URL
@@ -148,10 +195,30 @@ try:
         elif id_type == "URL":
 
             resource_type = "Unknown"
+            resource_type_general = "Unknown"
             source = "Unknown"
 
-        resource_type = resource_type or "Unknown"
-        source = source or "Unknown"
+        # -------------------------
+        # その他
+        # -------------------------
+        else:
+
+            resource_type = "Unknown"
+            resource_type_general = "Unknown"
+            source = "Unknown"
+
+        resource_type = (
+            resource_type or "Unknown"
+        )
+
+        resource_type_general = (
+            resource_type_general
+            or "Unknown"
+        )
+
+        source = (
+            source or "Unknown"
+        )
 
         # -------------------------
         # SQLite保存
@@ -161,13 +228,15 @@ try:
             identifier,
             identifier_type,
             resource_type,
+            resource_type_general,
             source
         )
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?)
         """, (
             identifier,
             id_type,
             resource_type,
+            resource_type_general,
             source
         ))
 
@@ -178,20 +247,21 @@ try:
             "identifier": identifier,
             "identifier_type": id_type,
             "resource_type": resource_type,
+            "resource_type_general":
+                resource_type_general,
             "source": source
         })
 
         count += 1
 
         # -------------------------
-        # SQLite commit
+        # SQLite Commit
         # -------------------------
         if count % commit_interval == 0:
-
             conn.commit()
 
         # -------------------------
-        # JSONL flush
+        # JSONL Flush
         # -------------------------
         if count % jsonl_interval == 0:
 
@@ -202,6 +272,7 @@ try:
             ) as f:
 
                 for record in jsonl_buffer:
+
                     f.write(
                         json.dumps(
                             record,
@@ -239,6 +310,7 @@ finally:
         ) as f:
 
             for record in jsonl_buffer:
+
                 f.write(
                     json.dumps(
                         record,
