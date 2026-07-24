@@ -122,6 +122,7 @@ get_metadata.pyを開いて設定変更します。
 contact_email = os.environ.get("CONTACT_EMAIL", "example@example.com")
 ```
 * User-Agentにメールアドレスを含めることで利用者を識別可能にし、API提供者に配慮したアクセスを行います。
+* 環境変数CONTACT_EMAILがあればそれを使います。
 
 初期状態のフィルタリング設定は以下の通りです。必要に応じて変更してください。
 
