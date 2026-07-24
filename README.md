@@ -82,6 +82,7 @@ CREATE TABLE identifiers (
     identifier TEXT PRIMARY KEY,
     identifier_type TEXT,
     resource_type TEXT,
+    resource_type_general TEXT, 
     source TEXT
 );
 ```
